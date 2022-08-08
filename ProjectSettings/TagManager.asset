@@ -3,17 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - TrainingCollisions
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Road
+  - RoadTriggers
+  - Camera
   - 
   - 
   - 

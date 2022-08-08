@@ -308,9 +308,9 @@ GameObject:
   - component: {fileID: 3850023004676461833}
   - component: {fileID: 5497951004144957945}
   - component: {fileID: 7822212033539450402}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: default
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -494,6 +494,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5514089750906472836}
   - component: {fileID: 5514089750906472839}
+  - component: {fileID: 482364441}
   m_Layer: 9
   m_Name: BRWheel
   m_TagString: Untagged
@@ -531,6 +532,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carRigidBody: {fileID: 5497731038365003580}
   carTransform: {fileID: 5520116342478679818}
+  layersForCollision:
+    serializedVersion: 2
+    m_Bits: 2147483647
   wheelRadius: 1.15
   suspensionRestDist: 2.5
   springStrength: 10000
@@ -616,9 +620,21 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   carTopSpeed: 20
-  maxEngineTorque: 10000
+  maxEngineTorque: 15000
   wheelFriction: 0.2
   brakeStrength: 0.815
+--- !u!114 &482364441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5515195414925426812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018318c91fee3744f8590d1fa33e62b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5515974174946397990
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,7 +649,7 @@ GameObject:
   - component: {fileID: 5597128374566677912}
   m_Layer: 0
   m_Name: MonsterTruck01
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -881,6 +897,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5520016305089381304}
   - component: {fileID: 5515979240836985973}
+  - component: {fileID: 1794308810}
   m_Layer: 9
   m_Name: FRWheel
   m_TagString: Untagged
@@ -918,6 +935,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carRigidBody: {fileID: 5497731038365003580}
   carTransform: {fileID: 5520116342478679818}
+  layersForCollision:
+    serializedVersion: 2
+    m_Bits: 2147483647
   wheelRadius: 1.15
   suspensionRestDist: 2.5
   springStrength: 10000
@@ -1003,9 +1023,21 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   carTopSpeed: 20
-  maxEngineTorque: 10000
+  maxEngineTorque: 15000
   wheelFriction: 0.2
   brakeStrength: 0.815
+--- !u!114 &1794308810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5515979240836985962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018318c91fee3744f8590d1fa33e62b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5515999684709562346
 GameObject:
   m_ObjectHideFlags: 0
@@ -10674,6 +10706,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5519798017187668386}
   - component: {fileID: 5516354479985032643}
+  - component: {fileID: 328097034}
   m_Layer: 9
   m_Name: BLWheel
   m_TagString: Untagged
@@ -10711,6 +10744,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carRigidBody: {fileID: 5497731038365003580}
   carTransform: {fileID: 5520116342478679818}
+  layersForCollision:
+    serializedVersion: 2
+    m_Bits: 2147483647
   wheelRadius: 1.15
   suspensionRestDist: 2.5
   springStrength: 10000
@@ -10796,9 +10832,21 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   carTopSpeed: 20
-  maxEngineTorque: 10000
+  maxEngineTorque: 15000
   wheelFriction: 0.2
   brakeStrength: 0.815
+--- !u!114 &328097034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5516354479985032640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018318c91fee3744f8590d1fa33e62b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5516397192167285674
 GameObject:
   m_ObjectHideFlags: 0
@@ -15701,6 +15749,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5513719497311451866}
   - component: {fileID: 5513719497311450405}
+  - component: {fileID: 1298546859}
   m_Layer: 9
   m_Name: FLWheel
   m_TagString: Untagged
@@ -15738,6 +15787,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   carRigidBody: {fileID: 5497731038365003580}
   carTransform: {fileID: 5520116342478679818}
+  layersForCollision:
+    serializedVersion: 2
+    m_Bits: 2147483647
   wheelRadius: 1.15
   suspensionRestDist: 2.5
   springStrength: 10000
@@ -15823,9 +15875,21 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   carTopSpeed: 20
-  maxEngineTorque: 10000
+  maxEngineTorque: 15000
   wheelFriction: 0.2
   brakeStrength: 0.815
+--- !u!114 &1298546859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5516788261319400634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 018318c91fee3744f8590d1fa33e62b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5516840860030641444
 GameObject:
   m_ObjectHideFlags: 0

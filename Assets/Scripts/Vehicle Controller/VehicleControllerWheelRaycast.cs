@@ -9,6 +9,8 @@ public class VehicleControllerWheelRaycast : MonoBehaviour
     Rigidbody carRigidBody;
     [SerializeField]
     Transform carTransform;
+    [SerializeField, Tooltip("Layers the wheel will collide with")]
+    LayerMask layersForCollision;
 
     [Header("Suspension")]
     [SerializeField]
@@ -51,9 +53,69 @@ public class VehicleControllerWheelRaycast : MonoBehaviour
     float brakeStrength;
 
     bool breakInput;
+    float steeringInput;
     float accelInput;
     float wheelDistancePerRev, wheelAngularVel;
+    Vector3 tireWorldVel;
+    Vector3 netSuspensionForce;
+    Vector3 netEngineForce;
+    Vector3 netSteeringForce;
+    Vector3 netWheelFrictionForce;
+    Vector3 netBrakeForce;
+    Collider currentlyHitting;
 
+    #region outputs
+    public bool IsGrounded
+    {
+        get
+        {
+            return currentlyHitting != null;
+        }
+    }
+    public Collider CurrentlyHittingCollider
+    {
+        get { return currentlyHitting; }
+    }
+    public Vector3 TireWorldVel
+    {
+        get { return tireWorldVel; }
+    }
+    public Vector3 NetSuspensionForce
+    {
+        get { return netSuspensionForce; }
+    }
+    public Vector3 NetEngineForce
+    {
+        get { return netEngineForce; }
+    }
+    public Vector3 NetSteeringForce
+    {
+        get { return netSteeringForce; }
+    }
+    public Vector3 NetWheelFrictionForce
+    {
+        get { return netWheelFrictionForce; }
+    }
+    public Vector3 NetBrakeForce
+    {
+        get { return netBrakeForce; }
+    }
+    #endregion
+
+    #region inputs
+    public float SteeringInput
+    {
+        set { steeringInput = value; }
+    }
+    public float GasInput
+    {
+        set { accelInput = value; }
+    }
+    public bool BrakeInput
+    {
+        set { breakInput = value; }
+    }
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -66,26 +128,28 @@ public class VehicleControllerWheelRaycast : MonoBehaviour
     {
         if (isSteerable)
         {
-            float steeringInput = Input.GetAxis("Horizontal");
             tireTransform.right = Quaternion.AngleAxis(steeringInput * maxSteeringAngle, carTransform.up) * carTransform.right;
         }
-        accelInput = Input.GetAxis("Vertical");
-        breakInput = Input.GetKey(KeyCode.Space);
+       
     }
 
     private void FixedUpdate()
     {
         RaycastHit hit;
-        Physics.Raycast(transform.position, -transform.up, out hit, suspensionRestDist + wheelRadius);
+        currentlyHitting = null;
+        Physics.Raycast(transform.position, -transform.up, out hit, suspensionRestDist + wheelRadius, layersForCollision.value);
         if (hit.collider != null) {
+            currentlyHitting = hit.collider;
+            // Suspension
             Debug.DrawLine(transform.position, transform.position - transform.up * (hit.distance), Color.yellow);
             Vector3 springDir = tireTransform.up;
-            Vector3 tireWorldVel = carRigidBody.GetPointVelocity(tireTransform.position);
+            tireWorldVel = carRigidBody.GetPointVelocity(tireTransform.position);
             float offset = suspensionRestDist - hit.distance;
             Debug.DrawLine(transform.position, transform.position - transform.up * (offset), Color.red);
             float vel = Vector3.Dot(springDir, tireWorldVel);
             float force = (offset * springStrength) - (vel * springDamper);
-            carRigidBody.AddForceAtPosition(springDir * force, tireTransform.position);
+            netSuspensionForce = springDir * force;
+            carRigidBody.AddForceAtPosition(netSuspensionForce, tireTransform.position);
             tireTransform.position = transform.position + (-hit.distance + wheelRadius) * transform.up;
 
 
@@ -96,7 +160,8 @@ public class VehicleControllerWheelRaycast : MonoBehaviour
             float steeringVel = Vector3.Dot(steeringDir, tireWorldVel);
             float desiredVelChange = -steeringVel * tireGripFactor.Evaluate(steeringVel);
             float desiredAccel = desiredVelChange / Time.fixedDeltaTime;
-            carRigidBody.AddForceAtPosition(steeringDir * tireMass * desiredAccel, tireTransform.position);
+            netSteeringForce = steeringDir * tireMass * desiredAccel;
+            carRigidBody.AddForceAtPosition(netSteeringForce, tireTransform.position);
 
             // Engine
             Vector3 accelDir = tireTransform.forward;
@@ -106,11 +171,15 @@ public class VehicleControllerWheelRaycast : MonoBehaviour
                 // forward speed of car in direction of driving
                 float normalizedSpeed = Mathf.Clamp01(Mathf.Abs(carSpeed) / carTopSpeed);
                 float availableTorque = enginePower.Evaluate(normalizedSpeed) * accelInput * maxEngineTorque;
-                carRigidBody.AddForceAtPosition(accelDir * availableTorque, tireTransform.position);
+                netEngineForce = accelDir * availableTorque;
+                carRigidBody.AddForceAtPosition(netEngineForce, tireTransform.position);
+            }
+            else
+            {
+                netEngineForce = Vector3.zero;
             }
             wheelDistancePerRev = 180f * wheelRadius;
             wheelAngularVel = tireWorldVel.magnitude * (1 / wheelDistancePerRev);
-            print(wheelAngularVel * 360f);
             tireGraphics.Rotate(Vector3.right * transform.localScale.x * carSpeed, wheelAngularVel * 360f, Space.Self);
 
             // Wheel friction
@@ -118,14 +187,24 @@ public class VehicleControllerWheelRaycast : MonoBehaviour
             float wheelFrictionVel = Vector3.Dot(wheelFrictionDir, tireWorldVel);
             float desiredFrictionVelChange = -wheelFrictionVel * wheelFriction;
             float desiredWheelFrictionAccel = desiredFrictionVelChange / Time.fixedDeltaTime;
-            carRigidBody.AddForceAtPosition(wheelFrictionDir * tireMass * desiredWheelFrictionAccel, tireTransform.position);
+            netWheelFrictionForce = wheelFrictionDir * tireMass * desiredWheelFrictionAccel;
+            carRigidBody.AddForceAtPosition(netWheelFrictionForce, tireTransform.position);
 
             // Brakes
             Vector3 breakingDir = tireTransform.forward;
             float breakingVel = Vector3.Dot(breakingDir, tireWorldVel);
             float desiredBrakeVelChange = -breakingVel * brakeStrength;
             float desiredBrakeAccel = desiredBrakeVelChange / Time.fixedDeltaTime;
-            carRigidBody.AddForceAtPosition(breakingDir * tireMass * desiredBrakeAccel, tireTransform.position);
+            netBrakeForce = breakingDir * tireMass * desiredBrakeAccel;
+            carRigidBody.AddForceAtPosition(netBrakeForce, tireTransform.position);
+        }
+        else
+        {
+            netSuspensionForce = Vector3.zero;
+            netSteeringForce = Vector3.zero;
+            netEngineForce = Vector3.zero;
+            netWheelFrictionForce = Vector3.zero;
+            netBrakeForce = Vector3.zero;
         }
     }
 }
